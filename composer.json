@@ -1,0 +1,21 @@
+{
+    "name": "nopjmp/discord-webhooks",
+    "description": "A simple lightweight Discord webhook client library.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nopjmp",
+            "email": "jmp@const.ninja"
+        }
+    ],
+    "require": {
+        "ext-curl": "^7.0",
+        "php": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "DiscordWebhooks\\": "DiscordWebhooks/"
+        }
+    }
+}
