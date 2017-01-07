@@ -1,6 +1,6 @@
 {
     "name": "nopjmp/discord-webhooks",
-    "description": "A simple lightweight Discord webhook client library.",
+    "description": "A simple Discord webhook client library.",
     "type": "library",
     "license": "MIT",
     "authors": [
