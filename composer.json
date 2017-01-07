@@ -10,8 +10,8 @@
         }
     ],
     "require": {
-        "ext-curl": "^7.0",
-        "php": "^7.0"
+        "ext-curl": "*",
+        "php": ">=5.4"
     },
     "autoload": {
         "psr-4": {
