@@ -19,9 +19,14 @@ It is fairly easy to use. I'll throw in an example.
 
 ```php
 use \DiscordWebhooks\Client;
+use \DiscordWebhooks\Embed;
 
 $webhook = new Client('DISCORD_WEBHOOK_URL');
-$webhook->name('Bot')->message('Hello, Human!')->send();
+$embed = new Embed();
+
+$embed->description('This is an embed');
+
+$webhook->name('Bot')->message('Hello, Human!')->embed($embed)->send();
 ```
 
 ## License

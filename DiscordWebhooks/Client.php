@@ -7,64 +7,71 @@ namespace DiscordWebhooks;
  */
 class Client
 {
-  protected $url = null;
-  protected $name = null;
-  protected $avatar = null;
-  protected $message = null;
+  protected $url;
+  protected $name;
+  protected $avatar;
+  protected $message;
+  protected $embeds;
 
-  function __construct($url)
+  public function __construct($url)
   {
-    $this->$url = $url;
+    $this->url = $url;
   }
 
-  function name($new_name)
+  public function name($new_name)
   {
-    $this->$name = $new_name;
+    $this->name = $new_name;
     return $this;
   }
 
-  function avatar($new_avatar)
+  public function avatar($new_avatar)
   {
-    $this->$avatar = $new_avatar;
+    $this->avatar = $new_avatar;
     return $this;
   }
 
-  function message($new_message)
+  public function message($new_message)
   {
-    $this->$message = $new_message;
+    $this->message = $new_message;
     return $this;
   }
 
-  function send()
+  public function embed($embed) {
+    $this->embeds[] = $embed->toArray();
+    return $this;
+  }
+
+  public function send()
   {
-    $payload = array(
-      'name' => $this->$name,
-      'avatar_url' => $this->$avatar,
-      'content' => $this->$message,
-    );
-
-    $data = json_encode($payload);
-
-    $options = array(
-      CURLOPT_URL => $this->$url,
-      CURLOPT_POST => 1,
-      CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_SSL_VERIFYHOST => true,
-      CURLOPT_SSL_VERIFYPEER => true,
-      CURLOPT_POSTFIELDS, $data,
-    )
+    $payload = json_encode(array(
+      'name' => $this->name,
+      'avatar_url' => $this->avatar,
+      'content' => $this->message,
+      'embeds' => $this->embeds,
+    ));
 
     $ch = curl_init();
 
-    curl_setopt_array($ch, $options);
+    curl_setopt($ch, CURLOPT_URL, $this->url);
+    curl_setopt($ch, CURLOPT_POST, TRUE);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
 
     $result = curl_exec($ch);
+    // Check for errors and display the error message
+    if($errno = curl_errno($ch)) {
+      $error_message = curl_strerror($errno);
+      throw new \Exception("cURL error ({$errno}):\n {$error_message}");
+    }
+
     $json_result = json_decode($result, true);
 
-    if (curl_getinfo($ch, CURLINFO_HTTP_CODE) != 204)
+    if (($httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE)) != 204)
     {
-      throw new Exception($output['message']);
+      throw new \Exception($httpcode . ':' . $result);
     }
 
     curl_close($ch);
