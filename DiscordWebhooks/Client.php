@@ -8,7 +8,7 @@ namespace DiscordWebhooks;
 class Client
 {
   protected $url;
-  protected $name;
+  protected $username;
   protected $avatar;
   protected $message;
   protected $embeds;
@@ -18,9 +18,9 @@ class Client
     $this->url = $url;
   }
 
-  public function name($new_name)
+  public function username($username)
   {
-    $this->name = $new_name;
+    $this->username = $username;
     return $this;
   }
 
@@ -44,7 +44,7 @@ class Client
   public function send()
   {
     $payload = json_encode(array(
-      'name' => $this->name,
+      'username' => $this->username,
       'avatar_url' => $this->avatar,
       'content' => $this->message,
       'embeds' => $this->embeds,
