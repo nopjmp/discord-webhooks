@@ -46,6 +46,12 @@ class Embed
     return $this;
   }
 
+    public function url($url) {
+        $this->url = $url;
+
+        return $this;
+    }
+
   public function footer($text, $icon_url = '')
   {
     $this->footer = [
