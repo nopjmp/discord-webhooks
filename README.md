@@ -26,7 +26,7 @@ $embed = new Embed();
 
 $embed->description('This is an embed');
 
-$webhook->name('Bot')->message('Hello, Human!')->embed($embed)->send();
+$webhook->username('Bot')->message('Hello, Human!')->embed($embed)->send();
 ```
 
 ## License
