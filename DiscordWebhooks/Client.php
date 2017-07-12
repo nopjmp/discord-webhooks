@@ -12,12 +12,17 @@ class Client
   protected $avatar;
   protected $message;
   protected $embeds;
+  protected $tts;
 
   public function __construct($url)
   {
     $this->url = $url;
   }
 
+  public function tts($tts = false) {
+    $this->tts = $tts;
+    return $this;
+  }
   public function username($username)
   {
     $this->username = $username;
@@ -48,6 +53,7 @@ class Client
       'avatar_url' => $this->avatar,
       'content' => $this->message,
       'embeds' => $this->embeds,
+      'tts' => $this->tts,
     ));
 
     $ch = curl_init();
