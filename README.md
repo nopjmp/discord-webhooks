@@ -26,9 +26,20 @@ $embed = new Embed();
 
 $embed->description('This is an embed');
 
-$webhook->username('Bot')->message('Hello, Human!')->embed($embed)->send();
+$webhook->name('Bot')->message('Hello, Human!')->embed($embed)->send();
 ```
 
+Sending Files:
+```php
+use \DiscordWebhooks\Client;
+use \DiscordWebhooks\File;
+
+$webhook = new Client('DISCORD_WEBHOOK_URL');
+
+$webhook->username('Spammer')->message("Hello world")->file(new File("FILE URL (NOT ABSOLUTE)", "FILE NAME OF YOUR DREAMS"))->send();
+
+
+```
 ## License
 
 The project is MIT licensed. To read the full license, open [LICENSE.md](LICENSE.md).
