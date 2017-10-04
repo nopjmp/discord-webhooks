@@ -8,7 +8,7 @@ namespace DiscordWebhooks;
 class Embed
 {
   protected $title;
-  protected $type = "rich";
+  protected $type;
   protected $description;
   protected $url;
   protected $timestamp;
@@ -27,7 +27,10 @@ class Embed
 
     return $this;
   }
-
+  public function type($type = 'rich') {
+      $this->type = $type;
+      return $this;
+  }
   public function description($description) {
     $this->description = $description;
 
