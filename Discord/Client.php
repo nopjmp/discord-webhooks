@@ -3,9 +3,9 @@
 namespace Discord;
 
 /**
- * Class Client
+ * Class Webhook
  *
- * Client generates the payload and sends the webhook payload to Discord
+ * Webhook generates the payload and sends the webhook payload to Discord
  */
 class Webhook
 {
@@ -50,7 +50,7 @@ class Webhook
     /**
      * @param bool $tts
      *
-     * @return Client
+     * @return Webhook
      */
     public function setTts( $tts = false )
     {
@@ -62,7 +62,7 @@ class Webhook
     /**
      * @param string $username
      *
-     * @return Client
+     * @return Webhook
      */
     public function setUsername( $username )
     {
@@ -74,7 +74,7 @@ class Webhook
     /**
      * @param string $newAvatar
      *
-     * @return Client
+     * @return Webhook
      */
     public function setAvatar( $newAvatar )
     {
@@ -86,7 +86,7 @@ class Webhook
     /**
      * @param string $newMessage
      *
-     * @return Client
+     * @return Webhook
      */
     public function setMessage( $newMessage )
     {
@@ -98,7 +98,7 @@ class Webhook
     /**
      * @param Embed $embed
      *
-     * @return Client
+     * @return Webhook
      */
     public function setEmbed( $embed )
     {
