@@ -36,9 +36,10 @@ Maybe the site can help you structuring your embeds properly ;)
 
 ## Advanced example
 
-Now let's create a cool embed like this:
+Now let's create a cool embed like this:\
 ![](http://scrummer.de/ss/K2017dR39.png)
 
+Aaaaaand here's the code:
 ```php
 <?php
 
