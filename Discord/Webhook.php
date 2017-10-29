@@ -72,25 +72,25 @@ class Webhook
     }
 
     /**
-     * @param string $newAvatar
+     * @param string $url
      *
      * @return Webhook
      */
-    public function setAvatar( $newAvatar )
+    public function setAvatar( $url )
     {
-        $this->avatar = $newAvatar;
+        $this->avatar = $url;
 
         return $this;
     }
 
     /**
-     * @param string $newMessage
+     * @param string $message
      *
      * @return Webhook
      */
-    public function setMessage( $newMessage )
+    public function setMessage( $message )
     {
-        $this->message = $newMessage;
+        $this->message = $message;
 
         return $this;
     }
