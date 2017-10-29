@@ -68,7 +68,7 @@ class EmbedAuthor extends AbstractEmbed
         return [
             'name'           => $this->name,
             'url'            => $this->url,
-            'icon_url'       => $this->url,
+            'icon_url'       => $this->iconUrl,
             'proxy_icon_url' => $this->proxyIconUrl
         ];
     }
