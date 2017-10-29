@@ -107,7 +107,15 @@ class Webhook
         return $this;
     }
 
-    public function send()
+    /**
+     * Send the Webhook
+     *
+     * @param bool $unsetFields
+     *
+     * @return Webhook
+     * @throws \Exception
+     */
+    public function send( $unsetFields = false )
     {
         $payload = json_encode( [
             'username'   => $this->username,
@@ -141,7 +149,9 @@ class Webhook
         }
 
         curl_close( $ch );
-        $this->unsetFields();
+        if ( $unsetFields ) {
+            $this->unsetFields();
+        }
 
         return $this;
     }

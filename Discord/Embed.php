@@ -256,6 +256,8 @@ class Embed implements EmbedInterface
             'thumbnail'   => $this->thumbnail,
             'author'      => $this->author,
             'fields'      => $this->fields,
+            'provider'    => $this->provider,
+            'video'       => $this->video
         ];
     }
 }
