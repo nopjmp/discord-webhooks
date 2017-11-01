@@ -40,6 +40,16 @@ class Webhook
     private $tts;
 
     /**
+     * @var array
+     */
+    private $file;
+
+    /**
+     * @var array
+     */
+    private $data = [];
+
+    /**
      * @param string $url
      */
     public function __construct( $url )
@@ -108,6 +118,19 @@ class Webhook
     }
 
     /**
+     * @param File $file
+     *
+     * @return Webhook
+     */
+    public function setFile( $file )
+    {
+        $this->data['file'] = curl_file_create( $file->getFile(), null, $file->getFileName() );
+        $this->file = $this->data;
+
+        return $this;
+    }
+
+    /**
      * Send the Webhook
      *
      * @param bool $unsetFields
@@ -129,11 +152,12 @@ class Webhook
 
         curl_setopt( $ch, CURLOPT_URL, $this->url );
         curl_setopt( $ch, CURLOPT_POST, true );
-        curl_setopt( $ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json'] );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, ['Content-Type: multipart/form-data'] );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
         curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 2 );
         curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 1 );
-        curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
+        curl_setopt( $ch, CURLOPT_HEADER, true );
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, isset( $this->file ) ? $this->file : $payload );
 
         $result = curl_exec( $ch );
         // Check for errors and display the error message
@@ -144,7 +168,7 @@ class Webhook
 
         $json_result = json_decode( $result, true );
 
-        if ( ($httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE )) != 204 ) {
+        if ( ($httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE )) != 204 || ($httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE )) != 200 ) {
             throw new \Exception( $httpcode . ':' . $result );
         }
 
