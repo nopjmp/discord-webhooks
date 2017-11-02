@@ -168,7 +168,7 @@ class Webhook
 
         $json_result = json_decode( $result, true );
 
-        if ( ($httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE )) != 204 || ($httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE )) != 200 ) {
+        if ( ($httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE )) != 204 && ($httpcode = curl_getinfo( $ch, CURLINFO_HTTP_CODE )) != 200 ) {
             throw new \Exception( $httpcode . ':' . $result );
         }
 
