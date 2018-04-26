@@ -41,7 +41,7 @@ class Embed
   }
 
   public function color($color) {
-    $this->color = $color;
+    $this->color = is_int($color) ? $color : hexdec($color);
 
     return $this;
   }
