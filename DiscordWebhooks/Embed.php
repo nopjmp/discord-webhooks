@@ -107,7 +107,8 @@ class Embed
       'color' => $this->color,
       'footer' => $this->footer,
       'image' => $this->image,
-      'thumbnail' => $this->thumbnail,
+      'thumbnail' => $this->thumbnail,      
+      'timestamp' => $this->timestamp,
       'author' => $this->author,
       'fields' => $this->fields,
     ];
