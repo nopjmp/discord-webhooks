@@ -65,7 +65,7 @@ class Client
   }
 
   public function clearFiles() {
-    $this->files = [];
+    $this->files = array();
     return $this;
   }
 
