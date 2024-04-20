@@ -29,6 +29,13 @@ $embed->description('This is an embed');
 $webhook->username('Bot')->message('Hello, Human!')->embed($embed)->send();
 ```
 
+Example of sending files:
+```
+$webhook->addFile("/path/to/file")
+        ->addStringFile("Hello World!", "hello_world.txt")
+        ->send();
+```
+
 ## License
 
 The project is MIT licensed. To read the full license, open [LICENSE.md](LICENSE.md).
