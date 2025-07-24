@@ -41,7 +41,12 @@ class Embed
   }
 
   public function color($color) {
-    $this->color = is_int($color) ? $color : hexdec($color);
+    if (is_int($color)) {
+        $this->color = $color;
+    } else {
+        $hex = preg_replace('/[^0-9A-Fa-f]/', '', $color);
+        $this->color = hexdec($hex);
+    }
 
     return $this;
   }
