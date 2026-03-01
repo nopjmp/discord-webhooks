@@ -79,22 +79,31 @@ class Client
       'tts' => $this->tts,
     ));
 
+    if ($this->files) {
+      $postFields = $this->files;
+      $postFields['payload_json'] = $payload;
+      $headers = array('Content-Type: multipart/form-data');
+    } else {
+      $postFields = $payload;
+      $headers = array('Content-Type: application/json');
+    }
+
+    $this->executeRequest($this->url, $postFields, $headers);
+
+    return $this;
+  }
+
+  protected function executeRequest($url, $postFields, $headers)
+  {
     $ch = curl_init();
 
-    curl_setopt($ch, CURLOPT_URL, $this->url);
+    curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, TRUE);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
-    if ($this->files) {
-      $multipart_payload = $this->files;
-      $multipart_payload['payload_json'] = $payload;
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $multipart_payload);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
-    } else {
-      curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
-      curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-    }
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
     $result = curl_exec($ch);
     // Check for errors and display the error message
@@ -109,7 +118,7 @@ class Client
       throw new \Exception($httpcode . ':' . $result);
     }
 
-    curl_close($ch);
+      curl_close($ch);
     return $this;
   }
 }
