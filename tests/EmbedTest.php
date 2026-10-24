@@ -79,6 +79,16 @@ class EmbedTest extends TestCase
         $this->assertSame(0x00FF00, $embed->toArray()['color']);
     }
 
+    public function testColorShorthandHex(): void
+    {
+        $embed = new Embed();
+        $embed->color('#F00');
+        $this->assertSame(0xFF0000, $embed->toArray()['color']);
+
+        $embed->color('fff');
+        $this->assertSame(0xFFFFFF, $embed->toArray()['color']);
+    }
+
     public function testUrl(): void
     {
         $embed = new Embed();
