@@ -45,6 +45,10 @@ class Embed
         $this->color = $color;
     } else {
         $hex = preg_replace('/[^0-9A-Fa-f]/', '', $color);
+        // expand shorthand colors like #F00 to #FF0000
+        if (strlen($hex) === 3) {
+            $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
+        }
         $this->color = hexdec($hex);
     }
 
