@@ -60,7 +60,8 @@ class Client
   }
 
   public function addStringFile($data, $posted_filename, $mime_type = null) {
-    $this->files[] = new \CURLStringFile($data, $posted_filename, $mime_type);
+    // CURLStringFile does not accept null as mime type, so fall back to its own default
+    $this->files[] = new \CURLStringFile($data, $posted_filename, $mime_type ?? 'application/octet-stream');
     return $this;
   }
 

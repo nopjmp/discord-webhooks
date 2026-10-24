@@ -160,6 +160,20 @@ class ClientTest extends TestCase
 
     /**
      * @requires extension curl
+     * @requires PHP 8.1
+     */
+    public function testAddStringFileWithoutMimeType(): void
+    {
+        $client = new TestableClient('https://discord.com/api/webhooks/test');
+        $client->addStringFile('file content', 'test.txt');
+        $files = $client->getFiles();
+
+        $this->assertCount(1, $files);
+        $this->assertSame('application/octet-stream', $files[0]->mime);
+    }
+
+    /**
+     * @requires extension curl
      */
     public function testClearFiles(): void
     {
