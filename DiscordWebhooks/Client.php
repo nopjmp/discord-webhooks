@@ -81,8 +81,10 @@ class Client
     ));
 
     if ($this->files) {
-      $postFields = $this->files;
-      $postFields['payload_json'] = $payload;
+      $postFields = array('payload_json' => $payload);
+      foreach ($this->files as $index => $file) {
+        $postFields["files[$index]"] = $file;
+      }
       $headers = array('Content-Type: multipart/form-data');
     } else {
       $postFields = $payload;

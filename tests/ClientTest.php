@@ -249,12 +249,19 @@ class ClientTest extends TestCase
 
         try {
             $client = new TestableClient('https://discord.com/api/webhooks/test');
-            $client->message('Hello')->addFile($tmpFile)->send();
+            $client->message('Hello')
+                ->addFile($tmpFile)
+                ->addStringFile('string content', 'hello.txt')
+                ->send();
 
             $this->assertTrue($client->sendCalled);
             $this->assertSame(['Content-Type: multipart/form-data'], $client->lastRequestHeaders);
             $this->assertArrayHasKey('payload_json', $client->lastRequestPostFields);
-            $this->assertInstanceOf(\CURLFile::class, $client->lastRequestPostFields[0]);
+            $this->assertCount(3, $client->lastRequestPostFields);
+            $this->assertArrayHasKey('files[0]', $client->lastRequestPostFields);
+            $this->assertArrayHasKey('files[1]', $client->lastRequestPostFields);
+            $this->assertInstanceOf(\CURLFile::class, $client->lastRequestPostFields['files[0]']);
+            $this->assertInstanceOf(\CURLStringFile::class, $client->lastRequestPostFields['files[1]']);
 
             $payload = json_decode($client->lastRequestPostFields['payload_json'], true);
             $this->assertSame('Hello', $payload['content']);
