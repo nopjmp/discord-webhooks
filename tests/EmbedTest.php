@@ -3,6 +3,7 @@
 namespace DiscordWebhooks\Tests;
 
 use DiscordWebhooks\Embed;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class EmbedTest extends TestCase
@@ -32,16 +33,43 @@ class EmbedTest extends TestCase
         $array = $embed->toArray();
 
         $this->assertSame('Test Title', $array['title']);
+        $this->assertNull($array['url']);
     }
 
-    public function testTitleWithUrl(): void
+    #[DataProvider('titleUrlProvider')]
+    public function testTitleWithUrl(?string $url): void
     {
         $embed = new Embed();
-        $embed->title('Test Title', 'https://example.com');
+        $embed->url('https://example.com/original')->title('Test Title', $url);
         $array = $embed->toArray();
 
         $this->assertSame('Test Title', $array['title']);
-        $this->assertSame('https://example.com', $array['url']);
+        $this->assertSame($url, $array['url']);
+    }
+
+    public static function titleUrlProvider(): array
+    {
+        return [
+            'replacement URL' => ['https://example.com'],
+            'clear with empty string' => [''],
+            'clear with null' => [null],
+        ];
+    }
+
+    public function testTitlePreservesExistingUrl(): void
+    {
+        $embed = new Embed();
+        $embed->url('https://example.com')->title('Test Title');
+
+        $this->assertSame('https://example.com', $embed->toArray()['url']);
+    }
+
+    public function testUpdatingTitlePreservesItsUrl(): void
+    {
+        $embed = new Embed();
+        $embed->title('Original Title', 'https://example.com')->title('Updated Title');
+
+        $this->assertSame('https://example.com', $embed->toArray()['url']);
     }
 
     public function testDescription(): void

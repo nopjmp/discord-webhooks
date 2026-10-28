@@ -23,7 +23,9 @@ class Embed
 
   public function title($title, $url = '') {
     $this->title = $title;
-    $this->url = $url;
+    if (func_num_args() > 1) {
+      $this->url = $url;
+    }
 
     return $this;
   }
