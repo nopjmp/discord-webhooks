@@ -7,7 +7,7 @@ namespace DiscordWebhooks;
  */
 class Client
 {
-  public const VERSION = '0.5.0-dev';
+  public const VERSION = '0.5.0';
 
   protected $url;
   protected $username;
