@@ -41,6 +41,15 @@ $webhook = new Client('DISCORD_WEBHOOK_URL', timeout: 60, connectTimeout: 5);
 
 `send()` throws an exception if a timeout expires.
 
+Requests identify this library and its version in the User-Agent header. Override
+the header to identify your application:
+
+```php
+$webhook->userAgent('DiscordBot (https://example.com/my-app, 1.0.0)');
+```
+
+Blank values, carriage returns, newlines, and null bytes throw `InvalidArgumentException`.
+
 Example of sending files:
 ```
 $webhook->addFile("/path/to/file")

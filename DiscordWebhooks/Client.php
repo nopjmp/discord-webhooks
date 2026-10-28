@@ -7,6 +7,8 @@ namespace DiscordWebhooks;
  */
 class Client
 {
+  public const VERSION = '0.5.0-dev';
+
   protected $url;
   protected $username;
   protected $avatar;
@@ -16,6 +18,7 @@ class Client
   protected $files;
   protected $timeout;
   protected $connectTimeout;
+  protected $userAgent = 'DiscordBot (https://github.com/nopjmp/discord-webhooks, ' . self::VERSION . ')';
 
   public function __construct($url, int $timeout = 30, int $connectTimeout = 10)
   {
@@ -35,6 +38,15 @@ class Client
   public function username($username)
   {
     $this->username = $username;
+    return $this;
+  }
+
+  public function userAgent(string $userAgent): self
+  {
+    if (trim($userAgent) === '' || strpbrk($userAgent, "\r\n\0") !== false) {
+      throw new \InvalidArgumentException('User-Agent must not be blank or contain carriage returns, newlines, or null bytes.');
+    }
+    $this->userAgent = $userAgent;
     return $this;
   }
 
@@ -108,6 +120,7 @@ class Client
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_USERAGENT, $this->userAgent);
     curl_setopt($ch, CURLOPT_POST, TRUE);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->connectTimeout);

@@ -71,6 +71,29 @@ class ClientTest extends TestCase
         $this->assertSame('TestBot', $client->getUsername());
     }
 
+    /**
+     * @dataProvider invalidUserAgentProvider
+     */
+    public function testUserAgentRejectsInvalidHeaders(string $userAgent): void
+    {
+        $client = new Client('https://discord.com/api/webhooks/test');
+        $this->expectException(\InvalidArgumentException::class);
+
+        $client->userAgent($userAgent);
+    }
+
+    public function invalidUserAgentProvider(): array
+    {
+        return [
+            'empty' => [''],
+            'whitespace only' => [" \t "],
+            'carriage return' => ["Example\rInjected: value"],
+            'newline' => ["Example\nInjected: value"],
+            'CRLF' => ["Example\r\nInjected: value"],
+            'null byte' => ["Example\0truncated"],
+        ];
+    }
+
     public function testAvatar(): void
     {
         $client = new TestableClient('https://discord.com/api/webhooks/test');
