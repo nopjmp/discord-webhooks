@@ -42,7 +42,7 @@ class Embed
     return $this;
   }
 
-  public function color($color) {
+  public function color(int|string $color) {
     if (is_int($color)) {
         $this->color = $color;
     } else {

@@ -46,6 +46,31 @@ class ClientTest extends TestCase
         $this->assertSame([], $client->getFiles());
     }
 
+    public function testConstructorRejectsNullUrl(): void
+    {
+        $this->expectException(\TypeError::class);
+
+        new Client(null);
+    }
+
+    #[DataProvider('nullFileInputProvider')]
+    public function testFileMethodsRejectRequiredNullInputs(string $method, array $arguments): void
+    {
+        $client = new Client('https://discord.com/api/webhooks/test');
+        $this->expectException(\TypeError::class);
+
+        $client->$method(...$arguments);
+    }
+
+    public static function nullFileInputProvider(): array
+    {
+        return [
+            'file path' => ['addFile', [null]],
+            'string-file data' => ['addStringFile', [null, 'test.txt']],
+            'string-file filename' => ['addStringFile', ['file content', null]],
+        ];
+    }
+
     #[DataProvider('invalidTimeoutProvider')]
     public function testConstructorRejectsNonPositiveTimeouts(int $timeout, int $connectTimeout): void
     {
@@ -216,6 +241,14 @@ class ClientTest extends TestCase
 
         $this->assertCount(1, $files);
         $this->assertSame('application/octet-stream', $files[0]->mime);
+    }
+
+    public function testAddStringFileWithNullMimeType(): void
+    {
+        $client = new TestableClient('https://discord.com/api/webhooks/test');
+        $client->addStringFile('file content', 'test.txt', null);
+
+        $this->assertSame('application/octet-stream', $client->getFiles()[0]->mime);
     }
 
     #[RequiresPhpExtension('curl')]

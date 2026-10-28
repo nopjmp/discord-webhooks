@@ -20,7 +20,7 @@ class Client
   protected $connectTimeout;
   protected $userAgent = 'DiscordBot (https://github.com/nopjmp/discord-webhooks, ' . self::VERSION . ')';
 
-  public function __construct($url, int $timeout = 30, int $connectTimeout = 10)
+  public function __construct(string $url, int $timeout = 30, int $connectTimeout = 10)
   {
     if ($timeout <= 0 || $connectTimeout <= 0) {
       throw new \InvalidArgumentException('Timeouts must be positive integers in seconds.');
@@ -84,7 +84,7 @@ class Client
     return $this;
   }
 
-  public function addFile($file_path, $posted_filename = null, $mime_type = null) {
+  public function addFile(string $file_path, ?string $posted_filename = null, ?string $mime_type = null) {
     if (!file_exists($file_path)) {
       throw new \Exception("$file_path: File not found.");
     }
@@ -95,7 +95,7 @@ class Client
     return $this;
   }
 
-  public function addStringFile($data, $posted_filename, $mime_type = null) {
+  public function addStringFile(string $data, string $posted_filename, ?string $mime_type = null) {
     // CURLStringFile does not accept null as mime type, so fall back to its own default
     $this->files[] = new \CURLStringFile($data, $posted_filename, $mime_type ?? 'application/octet-stream');
     return $this;

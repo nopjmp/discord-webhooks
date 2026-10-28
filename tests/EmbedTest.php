@@ -93,6 +93,19 @@ class EmbedTest extends TestCase
         $this->assertSame(16711680, $embed->toArray()['color']);
     }
 
+    public function testColorRejectsNull(): void
+    {
+        $embed = new Embed();
+        $embed->color('#FF0000');
+        $this->expectException(\TypeError::class);
+
+        try {
+            $embed->color(null);
+        } finally {
+            $this->assertSame(0xFF0000, $embed->toArray()['color']);
+        }
+    }
+
     public function testColorHexWithHash(): void
     {
         $embed = new Embed();

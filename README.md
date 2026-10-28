@@ -73,6 +73,11 @@ $webhook->addFile("/path/to/file")
         ->send();
 ```
 
+The webhook URL, file paths, and string-file contents and filenames must be strings.
+`Embed::color()` accepts an integer or a hexadecimal string. Passing `null` for
+these required values throws `TypeError`. Optional filenames in `addFile()` and
+optional MIME types in both upload methods still accept `null` to use defaults.
+
 ## License
 
 The project is MIT licensed. To read the full license, open [LICENSE.md](LICENSE.md).
