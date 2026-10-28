@@ -8,6 +8,8 @@ While this is probably "yet another" library for Discord's webhook system, I wan
 
 ## Getting Started
 
+Requires PHP 8.2 or later with the cURL extension.
+
 You can either copy the PHP file directly into your project or _preferable_ just use composer.
 
 #### Composer require command

@@ -146,16 +146,32 @@ class ClientTest extends TestCase
 
     /**
      * @requires extension curl
-     * @requires PHP 8.1
+     * @dataProvider stringFileProvider
      */
-    public function testAddStringFile(): void
+    public function testAddStringFile(string $data, ?string $mime, string $expectedMime): void
     {
         $client = new TestableClient('https://discord.com/api/webhooks/test');
-        $client->addStringFile('file content', 'test.txt', 'text/plain');
+        $result = $mime === null
+            ? $client->addStringFile($data, 'test.txt')
+            : $client->addStringFile($data, 'test.txt', $mime);
         $files = $client->getFiles();
 
+        $this->assertSame($client, $result);
         $this->assertCount(1, $files);
-        $this->assertInstanceOf(\CURLStringFile::class, $files[0]);
+        $file = $files[0];
+        $this->assertInstanceOf(\CURLStringFile::class, $file);
+        $this->assertSame($data, $file->data);
+        $this->assertSame('test.txt', $file->postname);
+        $this->assertSame($expectedMime, $file->mime);
+    }
+
+    public function stringFileProvider(): array
+    {
+        return [
+            'text with explicit MIME' => ['file content', 'text/plain', 'text/plain'],
+            'binary with default MIME' => ["\x00\xFF\r\n+/%", null, 'application/octet-stream'],
+            'empty with default MIME' => ['', null, 'application/octet-stream'],
+        ];
     }
 
     /**
