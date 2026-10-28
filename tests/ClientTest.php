@@ -241,6 +241,35 @@ class ClientTest extends TestCase
 
     /**
      * @requires extension curl
+     * @dataProvider invalidUtf8RequestProvider
+     */
+    public function testSendRejectsInvalidUtf8BeforeRequest(bool $withFiles): void
+    {
+        $client = new TestableClient('https://discord.com/api/webhooks/test');
+        $client->message("invalid UTF-8: \xFF");
+        if ($withFiles) {
+            $client->addStringFile('file content', 'test.txt');
+        }
+
+        $this->expectException(\JsonException::class);
+        $this->expectExceptionCode(JSON_ERROR_UTF8);
+        try {
+            $client->send();
+        } finally {
+            $this->assertFalse($client->sendCalled);
+        }
+    }
+
+    public function invalidUtf8RequestProvider(): array
+    {
+        return [
+            'JSON request' => [false],
+            'multipart request' => [true],
+        ];
+    }
+
+    /**
+     * @requires extension curl
      */
     public function testSendBuildsMultipartPayloadWithFiles(): void
     {

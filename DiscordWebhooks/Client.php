@@ -78,7 +78,7 @@ class Client
       'content' => $this->message,
       'embeds' => $this->embeds,
       'tts' => $this->tts,
-    ));
+    ), JSON_THROW_ON_ERROR);
 
     if ($this->files) {
       $postFields = array('payload_json' => $payload);
