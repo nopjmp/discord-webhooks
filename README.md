@@ -31,6 +31,22 @@ $embed->description('This is an embed');
 $webhook->username('Bot')->message('Hello, Human!')->embed($embed)->send();
 ```
 
+Discord's native webhook endpoint defaults to `wait=false`. In that mode, a
+successful `send()` does not confirm that Discord saved the message. Use `wait()`
+to request server confirmation:
+
+```php
+$webhook->wait()->message('Hello, Human!')->send();
+```
+
+`wait(false)` disables confirmation. Each call replaces any existing `wait`
+parameter while preserving other URL parameters, such as `thread_id`. Without a
+call to `wait()`, the URL is used as supplied, including any existing `wait` value.
+
+`send()` still returns the client. HTTP errors throw exceptions. A timeout means
+confirmation was not received; Discord may still have saved the message. See
+[Discord's webhook documentation](https://docs.discord.com/developers/resources/webhook#execute-webhook).
+
 Requests have a 10-second connection timeout and a 30-second overall timeout.
 The overall timeout includes connection time and file uploads. Override these
 limits with positive integers in seconds:

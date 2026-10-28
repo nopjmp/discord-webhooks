@@ -50,6 +50,23 @@ class Client
     return $this;
   }
 
+  public function wait(bool $wait = true): self
+  {
+    $urlAndFragment = explode('#', $this->url, 2);
+    $urlAndQuery = explode('?', $urlAndFragment[0], 2);
+    $parameters = [];
+    foreach (explode('&', $urlAndQuery[1] ?? '') as $parameter) {
+      $name = explode('=', $parameter, 2)[0];
+      if ($parameter !== '' && urldecode($name) !== 'wait') {
+        $parameters[] = $parameter;
+      }
+    }
+    $parameters[] = 'wait=' . ($wait ? 'true' : 'false');
+    $this->url = $urlAndQuery[0] . '?' . implode('&', $parameters)
+      . (isset($urlAndFragment[1]) ? '#' . $urlAndFragment[1] : '');
+    return $this;
+  }
+
   public function avatar($new_avatar)
   {
     $this->avatar = $new_avatar;

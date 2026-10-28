@@ -267,6 +267,53 @@ class ClientTest extends TestCase
         $this->assertTrue($payload['tts']);
     }
 
+    #[DataProvider('confirmationUrlProvider')]
+    public function testWaitUpdatesOnlyConfirmationQuery(string $url, bool $wait, string $expectedUrl): void
+    {
+        $client = new TestableClient($url);
+        $this->assertSame($client, $client->wait($wait));
+        $client->message('Hello')->send();
+
+        $this->assertSame($expectedUrl, $client->lastRequestUrl);
+    }
+
+    public static function confirmationUrlProvider(): array
+    {
+        $url = 'https://discord.com/api/webhooks/test';
+        return [
+            'enable confirmation' => [$url, true, $url . '?wait=true'],
+            'disable confirmation' => [$url, false, $url . '?wait=false'],
+            'preserve thread and components' => [
+                $url . '?thread_id=123456789012345678&with_components=true',
+                true,
+                $url . '?thread_id=123456789012345678&with_components=true&wait=true',
+            ],
+            'replace existing false' => [$url . '?wait=false&thread_id=123', true, $url . '?thread_id=123&wait=true'],
+            'replace existing true' => [$url . '?thread_id=123&wait=true', false, $url . '?thread_id=123&wait=false'],
+            'replace duplicate values' => [$url . '?wait=false&wait=true', false, $url . '?wait=false'],
+            'preserve encoded parameters' => [$url . '?name=a%20b%2Bc&%77ait=0', true, $url . '?name=a%20b%2Bc&wait=true'],
+            'preserve fragment' => [$url . '?thread_id=123#section', true, $url . '?thread_id=123&wait=true#section'],
+            'empty query' => [$url . '?', true, $url . '?wait=true'],
+        ];
+    }
+
+    public function testWaitCanBeChangedRepeatedly(): void
+    {
+        $client = new TestableClient('https://discord.com/api/webhooks/test?thread_id=123');
+        $client->wait()->wait(false)->wait()->message('Hello')->send();
+
+        $this->assertSame('https://discord.com/api/webhooks/test?thread_id=123&wait=true', $client->lastRequestUrl);
+    }
+
+    public function testSendPreservesConfirmationInOriginalUrl(): void
+    {
+        $url = 'https://discord.com/api/webhooks/test?wait=true&thread_id=123';
+        $client = new TestableClient($url);
+        $client->message('Hello')->send();
+
+        $this->assertSame($url, $client->lastRequestUrl);
+    }
+
     #[RequiresPhpExtension('curl')]
     #[DataProvider('invalidUtf8RequestProvider')]
     public function testSendRejectsInvalidUtf8BeforeRequest(bool $withFiles): void
