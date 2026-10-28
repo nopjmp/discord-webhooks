@@ -30,4 +30,4 @@ jobs:
         with:
           php_version: ${{ matrix.php-version }}
           php_extensions: curl
-          version: 9
+          version: composer

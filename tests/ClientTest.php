@@ -4,6 +4,8 @@ namespace DiscordWebhooks\Tests;
 
 use DiscordWebhooks\Client;
 use DiscordWebhooks\Embed;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
 class TestableClient extends Client
@@ -44,9 +46,7 @@ class ClientTest extends TestCase
         $this->assertSame([], $client->getFiles());
     }
 
-    /**
-     * @dataProvider invalidTimeoutProvider
-     */
+    #[DataProvider('invalidTimeoutProvider')]
     public function testConstructorRejectsNonPositiveTimeouts(int $timeout, int $connectTimeout): void
     {
         $this->expectException(\InvalidArgumentException::class);
@@ -54,7 +54,7 @@ class ClientTest extends TestCase
         new Client('https://discord.com/api/webhooks/test', $timeout, $connectTimeout);
     }
 
-    public function invalidTimeoutProvider(): array
+    public static function invalidTimeoutProvider(): array
     {
         return [
             'zero request timeout' => [0, 10],
@@ -71,9 +71,7 @@ class ClientTest extends TestCase
         $this->assertSame('TestBot', $client->getUsername());
     }
 
-    /**
-     * @dataProvider invalidUserAgentProvider
-     */
+    #[DataProvider('invalidUserAgentProvider')]
     public function testUserAgentRejectsInvalidHeaders(string $userAgent): void
     {
         $client = new Client('https://discord.com/api/webhooks/test');
@@ -82,7 +80,7 @@ class ClientTest extends TestCase
         $client->userAgent($userAgent);
     }
 
-    public function invalidUserAgentProvider(): array
+    public static function invalidUserAgentProvider(): array
     {
         return [
             'empty' => [''],
@@ -135,9 +133,7 @@ class ClientTest extends TestCase
         $this->assertSame('Description', $embeds[0]['description']);
     }
 
-    /**
-     * @requires extension curl
-     */
+    #[RequiresPhpExtension('curl')]
     public function testAddFileWithExistingFile(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'discord_test_');
@@ -155,9 +151,7 @@ class ClientTest extends TestCase
         }
     }
 
-    /**
-     * @requires extension curl
-     */
+    #[RequiresPhpExtension('curl')]
     public function testAddFileMissingFileThrowsException(): void
     {
         $this->expectException(\Exception::class);
@@ -166,9 +160,7 @@ class ClientTest extends TestCase
         $client->addFile('/nonexistent/file.txt');
     }
 
-    /**
-     * @requires extension curl
-     */
+    #[RequiresPhpExtension('curl')]
     public function testAddFileWithCustomFilenameAndMime(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'discord_test_');
@@ -187,10 +179,8 @@ class ClientTest extends TestCase
         }
     }
 
-    /**
-     * @requires extension curl
-     * @dataProvider stringFileProvider
-     */
+    #[RequiresPhpExtension('curl')]
+    #[DataProvider('stringFileProvider')]
     public function testAddStringFile(string $data, ?string $mime, string $expectedMime): void
     {
         $client = new TestableClient('https://discord.com/api/webhooks/test');
@@ -208,7 +198,7 @@ class ClientTest extends TestCase
         $this->assertSame($expectedMime, $file->mime);
     }
 
-    public function stringFileProvider(): array
+    public static function stringFileProvider(): array
     {
         return [
             'text with explicit MIME' => ['file content', 'text/plain', 'text/plain'],
@@ -217,10 +207,7 @@ class ClientTest extends TestCase
         ];
     }
 
-    /**
-     * @requires extension curl
-     * @requires PHP 8.1
-     */
+    #[RequiresPhpExtension('curl')]
     public function testAddStringFileWithoutMimeType(): void
     {
         $client = new TestableClient('https://discord.com/api/webhooks/test');
@@ -231,9 +218,7 @@ class ClientTest extends TestCase
         $this->assertSame('application/octet-stream', $files[0]->mime);
     }
 
-    /**
-     * @requires extension curl
-     */
+    #[RequiresPhpExtension('curl')]
     public function testClearFiles(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'discord_test_');
@@ -282,10 +267,8 @@ class ClientTest extends TestCase
         $this->assertTrue($payload['tts']);
     }
 
-    /**
-     * @requires extension curl
-     * @dataProvider invalidUtf8RequestProvider
-     */
+    #[RequiresPhpExtension('curl')]
+    #[DataProvider('invalidUtf8RequestProvider')]
     public function testSendRejectsInvalidUtf8BeforeRequest(bool $withFiles): void
     {
         $client = new TestableClient('https://discord.com/api/webhooks/test');
@@ -303,7 +286,7 @@ class ClientTest extends TestCase
         }
     }
 
-    public function invalidUtf8RequestProvider(): array
+    public static function invalidUtf8RequestProvider(): array
     {
         return [
             'JSON request' => [false],
@@ -311,9 +294,7 @@ class ClientTest extends TestCase
         ];
     }
 
-    /**
-     * @requires extension curl
-     */
+    #[RequiresPhpExtension('curl')]
     public function testSendBuildsMultipartPayloadWithFiles(): void
     {
         $tmpFile = tempnam(sys_get_temp_dir(), 'discord_test_');

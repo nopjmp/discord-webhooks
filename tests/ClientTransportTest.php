@@ -3,14 +3,14 @@
 namespace DiscordWebhooks\Tests;
 
 use DiscordWebhooks\Client;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
 class ClientTransportTest extends TestCase
 {
-    /**
-     * @requires extension curl
-     * @dataProvider requestTypeProvider
-     */
+    #[RequiresPhpExtension('curl')]
+    #[DataProvider('requestTypeProvider')]
     public function testSendIncludesUserAgentAndTimesOutWithoutResponse(bool $withFiles, ?string $userAgent): void
     {
         $server = stream_socket_server('tcp://127.0.0.1:0');
@@ -52,7 +52,7 @@ class ClientTransportTest extends TestCase
         }
     }
 
-    public function requestTypeProvider(): array
+    public static function requestTypeProvider(): array
     {
         return [
             'JSON request with default' => [false, null],
