@@ -31,6 +31,16 @@ $embed->description('This is an embed');
 $webhook->username('Bot')->message('Hello, Human!')->embed($embed)->send();
 ```
 
+Requests have a 10-second connection timeout and a 30-second overall timeout.
+The overall timeout includes connection time and file uploads. Override these
+limits with positive integers in seconds:
+
+```php
+$webhook = new Client('DISCORD_WEBHOOK_URL', timeout: 60, connectTimeout: 5);
+```
+
+`send()` throws an exception if a timeout expires.
+
 Example of sending files:
 ```
 $webhook->addFile("/path/to/file")

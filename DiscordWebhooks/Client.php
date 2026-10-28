@@ -14,11 +14,18 @@ class Client
   protected $embeds;
   protected $tts;
   protected $files;
+  protected $timeout;
+  protected $connectTimeout;
 
-  public function __construct($url)
+  public function __construct($url, int $timeout = 30, int $connectTimeout = 10)
   {
+    if ($timeout <= 0 || $connectTimeout <= 0) {
+      throw new \InvalidArgumentException('Timeouts must be positive integers in seconds.');
+    }
     $this->url = $url;
     $this->files = array();
+    $this->timeout = $timeout;
+    $this->connectTimeout = $connectTimeout;
   }
 
   public function tts($tts = false) {
@@ -103,6 +110,8 @@ class Client
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, TRUE);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $this->connectTimeout);
+    curl_setopt($ch, CURLOPT_TIMEOUT, $this->timeout);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);

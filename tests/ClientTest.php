@@ -44,6 +44,26 @@ class ClientTest extends TestCase
         $this->assertSame([], $client->getFiles());
     }
 
+    /**
+     * @dataProvider invalidTimeoutProvider
+     */
+    public function testConstructorRejectsNonPositiveTimeouts(int $timeout, int $connectTimeout): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        new Client('https://discord.com/api/webhooks/test', $timeout, $connectTimeout);
+    }
+
+    public function invalidTimeoutProvider(): array
+    {
+        return [
+            'zero request timeout' => [0, 10],
+            'negative request timeout' => [-1, 10],
+            'zero connection timeout' => [30, 0],
+            'negative connection timeout' => [30, -1],
+        ];
+    }
+
     public function testUsername(): void
     {
         $client = new TestableClient('https://discord.com/api/webhooks/test');
